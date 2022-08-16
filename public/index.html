@@ -1,0 +1,63 @@
+
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+
+<script src="autocomplete.js"></script>
+<link rel="stylesheet"  type="text/css" href="autocomplete.css">
+
+<div id="vsg-example">
+  <div id="vsg-search">
+    <div class="vsg-instructions">Search for a place:</div>
+
+    <input type="text" id="vsg-city-autocomplete" name="g-city-complete" value="Enter city name or ZIP code" class="vsg-dummy-text"> 
+
+  </div>
+
+  <div id="vsg-output">
+  </div>
+  
+</div>
+
+
+<script>
+jQuery( function($) {
+
+  /* Create the autocompleter */ 
+  var autocompleter = $('#vsg-city-autocomplete').autocomplete({
+
+    minChars:2,
+    zIndex: 9999,
+    deferRequestBy: 0, 
+    noCache: false, 
+    ignoreParams: true,
+    preferD3ForJson: true,
+
+    serviceUrl:   function lookupUrl(id,r) {
+      var short_id = id.substring(0,2);
+      if ( short_id.match( /^\w{1,2}$/ )) {
+        return 'lookups/' + short_id.toLowerCase() + '.json'
+      } else {
+        return false;
+      }
+    },
+
+    onSelect: function( s ) { 
+      // console.log( s ); 
+      $('#vsg-output').html('You selected: <b>' + s.value + ', ' + s.data.lat + ', ' + s.data.lon + '</b>'); 
+    }
+
+  });
+
+  /* Code to hide on click */
+  $('#vsg-city-autocomplete').click( function(e) {
+    $(this).val('');
+    $(this).removeClass('vsg-dummy-text');
+    $('#vsg-city-autocomplete').autocomplete('clear');
+    $('#vsg-city-autocomplete').autocomplete('hide');
+  });
+  
+
+} );
+
+
+</script> 
